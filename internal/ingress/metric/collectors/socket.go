@@ -177,7 +177,7 @@ func NewSocketCollector(pod, namespace, class string, metricsPerHost bool) (*Soc
 				Namespace:   PrometheusNamespace,
 				ConstLabels: constLabels,
 			},
-			[]string{"ingress", "namespace", "status", "service"},
+			requestTags,
 		),
 
 		bytesSent: prometheus.NewHistogramVec(
@@ -248,20 +248,13 @@ func (sc *SocketCollector) handleMessage(msg []byte) {
 			requestLabels["host"] = stats.Host
 		}
 
-		collectorLabels := prometheus.Labels{
-			"namespace": stats.Namespace,
-			"ingress":   stats.Ingress,
-			"status":    stats.Status,
-			"service":   stats.Service,
-		}
-
 		latencyLabels := prometheus.Labels{
 			"namespace": stats.Namespace,
 			"ingress":   stats.Ingress,
 			"service":   stats.Service,
 		}
 
-		requestsMetric, err := sc.requests.GetMetricWith(collectorLabels)
+		requestsMetric, err := sc.requests.GetMetricWith(requestLabels)
 		if err != nil {
 			klog.ErrorS(err, "Error fetching requests metric")
 		} else {
