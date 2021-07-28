@@ -100,7 +100,7 @@ var defObjectives = map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001}
 
 // NewSocketCollector creates a new SocketCollector instance using
 // the ingress watch namespace and class used by the controller
-func NewSocketCollector(pod, namespace, class string, metricsPerHost bool) (*SocketCollector, error) {
+func NewSocketCollector(pod, namespace, class string, metricsPerHost bool, metricsDurationBuckets []float64) (*SocketCollector, error) {
 	socket := "/tmp/prometheus-nginx.socket"
 	// unix sockets must be unlink()ed before being used
 	_ = syscall.Unlink(socket)
@@ -137,6 +137,7 @@ func NewSocketCollector(pod, namespace, class string, metricsPerHost bool) (*Soc
 				Help:        "The time spent on receiving the response from the upstream server",
 				Namespace:   PrometheusNamespace,
 				ConstLabels: constLabels,
+				Buckets:     metricsDurationBuckets,
 			},
 			requestTags,
 		),
@@ -156,6 +157,7 @@ func NewSocketCollector(pod, namespace, class string, metricsPerHost bool) (*Soc
 				Help:        "The request processing time in milliseconds",
 				Namespace:   PrometheusNamespace,
 				ConstLabels: constLabels,
+				Buckets:     metricsDurationBuckets,
 			},
 			requestTags,
 		),

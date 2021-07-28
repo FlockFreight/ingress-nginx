@@ -91,8 +91,9 @@ type Configuration struct {
 
 	EnableProfiling bool
 
-	EnableMetrics  bool
-	MetricsPerHost bool
+	EnableMetrics          bool
+	MetricsPerHost         bool
+	MetricsDurationBuckets []float64
 
 	FakeCertificate *ingress.SSLCert
 
